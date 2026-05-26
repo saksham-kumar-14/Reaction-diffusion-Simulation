@@ -5,8 +5,6 @@
 #include <utility>
 #include <stdexcept>
 
-enum class SimulationState { Uninitialised, Running, Paused, Error };
-
 class Grid {
 private:
     size_t width;
