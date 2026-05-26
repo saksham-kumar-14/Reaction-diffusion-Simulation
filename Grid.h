@@ -69,4 +69,7 @@ public:
     size_t GetWidth() const {
         return width;
     }
+
+    inline const Cell* GetRawData() const { return data.get(); }
+    inline Cell* GetRawData() { return data.get(); }
 };
