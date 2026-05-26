@@ -19,7 +19,7 @@ void PPMSave(const Grid& grid, const std::string& filename){
 
     for(size_t y = 0; y < height; ++y){
         for(size_t x = 0; x < width; ++x){
-            float b = grid.Get(x, y).b;
+            float b = grid.GetB(x, y);
             int color = std::clamp(static_cast<int>(b*255.0f), 0, 255);
             file << color << " " << color << " " << color << '\n';
         }
@@ -27,8 +27,8 @@ void PPMSave(const Grid& grid, const std::string& filename){
 }
 
 int main(){
-    const size_t WIDTH = 256;
-    const size_t HEIGHT = 256;
+    const size_t WIDTH = 258;
+    const size_t HEIGHT = 258;
     Simulation<GrayScott> simulation(WIDTH, HEIGHT);
 
     Grid& startG = const_cast<Grid&>(simulation.GetCurrentGrid());
@@ -38,21 +38,21 @@ int main(){
     // dropping chemical B in center of 20x20
     for(size_t x = centerX - 10; x < centerX + 10; ++x){
         for(size_t y = centerY - 10; y < centerY + 10; ++y){
-            startG.Get(x, y).b = 1.0f;
+            startG.GetB(x, y) = 1.0f;
         }
     }
 
     const int FRAMES = 1000;
     const float DELTA = 1.0f;
 
-    std::cout << "Stating simulation with frames : " << FRAMES << '\n';
+    std::cout << "Starting simulation with frames : " << FRAMES << '\n';
 
     auto stateTime = std::chrono::high_resolution_clock::now();
     std::filesystem::create_directory("assets");
+
     for(size_t frame = 1; frame <= FRAMES; ++frame){
         simulation.Update(DELTA);
 
-        // saving image to see the pattern grow
         if(frame%100 == 0){
             std::string filename = "assets/output_frame-" + std::to_string(frame) + ".ppm";
             PPMSave(simulation.GetCurrentGrid(), filename);
@@ -62,7 +62,7 @@ int main(){
 
     auto endTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = endTime - stateTime;
-    std::cout << "Simulation finished in : " << duration.count() << '\n';
+    std::cout << "Simulation finished in : " << duration.count() << " ms\n";
 
     return 0;
 }
